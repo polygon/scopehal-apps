@@ -2264,7 +2264,9 @@ void WaveformArea::ToneMapAnalogOrDigitalWaveform(shared_ptr<DisplayedChannel> c
 		**m_parent->GetTextureManager()->GetSampler(),
 		tex->GetView(),
 		vk::ImageLayout::eGeneral);
-	auto color = ImGui::ColorConvertU32ToFloat4(ColorFromString(channel->GetStream().m_channel->m_displaycolor));
+	StreamDescriptor sd = channel->GetStream();
+	auto color_str = sd.m_channel->GetStreamColor(sd.m_stream);
+	auto color = ImGui::ColorConvertU32ToFloat4(ColorFromString(color_str));
 	WaveformToneMapArgs args(color, width, height);
 	pipe->Dispatch(cmdbuf, args, GetComputeBlockCount(width, 64), height);
 
@@ -3786,7 +3788,7 @@ void WaveformArea::ChannelButton(shared_ptr<DisplayedChannel> chan, size_t index
 	float bgmul = 0.2;
 	float hmul = 0.4;
 	float amul = 0.6;
-	auto color = ColorFromString(rchan->m_displaycolor);
+	auto color = ColorFromString(rchan->GetStreamColor(stream.m_stream));
 	auto fcolor = ImGui::ColorConvertU32ToFloat4(color);
 	auto bcolor = ImGui::ColorConvertFloat4ToU32(ImVec4(fcolor.x*bgmul, fcolor.y*bgmul, fcolor.z*bgmul, fcolor.w) );
 	auto hcolor = ImGui::ColorConvertFloat4ToU32(ImVec4(fcolor.x*hmul, fcolor.y*hmul, fcolor.z*hmul, fcolor.w) );
